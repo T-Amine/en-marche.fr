@@ -89,7 +89,7 @@ class EventControllerTest extends AbstractEventControllerTest
 
     public function testRegisteredAdherentUserCanRegisterToEvent()
     {
-        $this->authenticateAsAdherent($this->client, 'jacques.picard@en-marche.fr');
+        $this->authenticateAsAdherent($this->client, 'deputy@en-marche-dev.fr');
         $crawler = $this->client->request(Request::METHOD_GET, '/');
 
         $crawler = $this->client->click($crawler->selectLink('Rejoindre un comité')->link());
@@ -109,9 +109,9 @@ class EventControllerTest extends AbstractEventControllerTest
         $crawler = $this->client->click($crawler->selectLink('Je veux participer')->link());
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
-        $this->assertSame('Jacques', $crawler->filter('#field-first-name > input[type="text"]')->attr('value'));
-        $this->assertSame('Picard', $crawler->filter('#field-last-name > input[type="text"]')->attr('value'));
-        $this->assertSame('jacques.picard@en-marche.fr', $crawler->filter('#field-email-address > input[type="email"]')->attr('value'));
+        $this->assertSame('Député', $crawler->filter('#field-first-name > input[type="text"]')->attr('value'));
+        $this->assertSame('PARIS I', $crawler->filter('#field-last-name > input[type="text"]')->attr('value'));
+        $this->assertSame('deputy@en-marche-dev.fr', $crawler->filter('#field-email-address > input[type="email"]')->attr('value'));
         $this->assertSame(1, $crawler->filter('#field-accept-terms')->count());
         // Adherent is already subscribed to mails
         $this->assertSame(0, $crawler->filter('#field-newsletter-subscriber')->count());
@@ -120,10 +120,8 @@ class EventControllerTest extends AbstractEventControllerTest
         $form['event_registration[personalDataCollection]']->tick();
         $this->client->submit($form);
 
-        $this->assertInstanceOf(EventRegistration::class, $this->repository->findGuestRegistration(LoadEventData::EVENT_1_UUID, 'jacques.picard@en-marche.fr'));
-        $this->assertCount(1, $this->getEmailRepository()->findRecipientMessages(EventRegistrationConfirmationMessage::class, 'jacques.picard@en-marche.fr'));
-
-        $crawler = $this->client->followRedirect();
+        $this->assertInstanceOf(EventRegistration::class, $this->repository->findGuestRegistration(LoadEventData::EVENT_1_UUID, 'deputy@en-marche-dev.fr'));
+        $this->assertCount(1, $this->getEmailRepository()->findRecipientMessages(EventRegistrationConfirmationMessage::class, 'deputy@en-marche-dev.fr'));
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
         $this->assertTrue($this->seeFlashMessage($crawler, "Votre inscription à l'événement est confirmée."));

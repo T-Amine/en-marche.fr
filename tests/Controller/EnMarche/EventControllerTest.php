@@ -126,6 +126,8 @@ class EventControllerTest extends AbstractEventControllerTest
         $this->assertInstanceOf(EventRegistration::class, $this->repository->findGuestRegistration(LoadEventData::EVENT_1_UUID, 'deputy@en-marche-dev.fr'));
         $this->assertCount(1, $this->getEmailRepository()->findRecipientMessages(EventRegistrationConfirmationMessage::class, 'deputy@en-marche-dev.fr'));
 
+        $crawler = $this->client->followRedirect();
+
         $this->assertResponseStatusCode(Response::HTTP_FOUND, $this->client->getResponse());
         $this->assertTrue($this->seeFlashMessage($crawler, "Votre inscription à l'événement est confirmée."));
         $this->assertContains('Votre participation est bien enregistrée !', $crawler->filter('.committee-event-registration-confirmation p')->text());

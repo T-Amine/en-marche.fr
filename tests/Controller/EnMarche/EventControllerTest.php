@@ -135,7 +135,7 @@ class EventControllerTest extends AbstractEventControllerTest
         $crawler = $this->client->click($crawler->selectLink('Retour')->link());
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
-        $this->assertSame('1 inscrit', trim($crawler->filter('.committee-event-attendees')->text()));
+        $this->assertSame('2 inscrits', trim($crawler->filter('.committee-event-attendees')->text()));
 
         $this->client->click($crawler->selectLink('Mes activités')->link());
 

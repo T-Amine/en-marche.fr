@@ -128,7 +128,7 @@ class EventControllerTest extends AbstractEventControllerTest
 
         $crawler = $this->client->followRedirect();
 
-        $this->assertResponseStatusCode(Response::HTTP_FOUND, $this->client->getResponse());
+        $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
         $this->assertTrue($this->seeFlashMessage($crawler, "Votre inscription à l'événement est confirmée."));
         $this->assertContains('Votre participation est bien enregistrée !', $crawler->filter('.committee-event-registration-confirmation p')->text());
 

@@ -2,19 +2,20 @@
 
 namespace AppBundle\Controller\EnMarche;
 
+use AppBundle\Entity\Event;
 use AppBundle\Event\EventInvitation;
 use AppBundle\Event\EventRegistrationCommand;
-use AppBundle\Entity\Event;
 use AppBundle\Exception\BadUuidRequestException;
 use AppBundle\Exception\InvalidUuidException;
 use AppBundle\Form\EventInvitationType;
 use AppBundle\Form\EventRegistrationType;
 use AppBundle\Repository\EventRepository;
 use AppBundle\Security\Http\Session\AnonymousFollowerSession;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -172,5 +173,29 @@ class EventController extends Controller
             'committee_event' => $event,
             'invitations_count' => $invitationsCount,
         ]);
+    }
+
+    /**
+     * @Route("/desinscription", name="app_event_unregistration", condition="request.isXmlHttpRequest()")
+     * @Method("GET|POST")
+     */
+    public function unregistrationAction(Request $request, Event $event): JsonResponse
+    {
+        if (!$this->isCsrfTokenValid('citizen_action.unregistration', $token = $request->request->get('token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF protection token to unregister from the citizen action.');
+        }
+
+        $eventRegistrationManager = $this->get('app.event.registration_manager');
+
+        if (!($adherentEventRegistration = $eventRegistrationManager->searchRegistration($event, $this->getUser()->getEmailAddress(), null))) {
+            return new JsonResponse(
+                ['error' => 'Impossible d\'exécuter la désinscription de l\'évènement, votre inscription n\'est pas trouvée.'],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        $eventRegistrationManager->remove($adherentEventRegistration);
+
+        return new JsonResponse();
     }
 }

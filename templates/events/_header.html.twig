@@ -35,7 +35,11 @@
                 L'événement à été annulé
             </div>
         {% elseif not event.full%}
-            <a class="btn btn--no-border {{ isFull?' btn--full':''}} register-event" href="{{ path("app_#{event.type}_attend", {slug: event.slug}) }}">Je veux participer</a>
+            {% if is_already_participating(event, app.user) %}
+                <button class="btn btn--no-border {{ isFull?' btn--full':''}} unregister-event" data-csrf-token="{{ csrf_token('citizen_action.unregistration') }}">Je ne veux plus participer</button>
+            {% else %}
+                <a class="btn btn--no-border {{ isFull?' btn--full':''}} register-event" href="{{ path("app_#{event.type}_attend", {slug: event.slug}) }}">Je veux participer</a>
+            {% endif %}
         {% else %}
             <button class="btn btn--no-border{{ isFull?' btn--full':''}} btn--text-blue btn--disabled register-event" disabled="disabled">
                 Je veux participer
@@ -71,3 +75,4 @@
         </ul>
     </div>
 </div>
+<div id="unregistration_error"></div>

@@ -87,9 +87,6 @@ class EventControllerTest extends AbstractEventControllerTest
         $this->assertSame('2 inscrits', trim($crawler->filter('.committee-event-attendees')->text()));
     }
 
-    /**
-     * @group wip
-     */
     public function testRegisteredAdherentUserCanRegisterToEvent()
     {
         $this->authenticateAsAdherent($this->client, 'deputy@en-marche-dev.fr');

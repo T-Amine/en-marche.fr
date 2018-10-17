@@ -42,7 +42,6 @@ class LoadEventData implements FixtureInterface, ContainerAwareInterface, Depend
     const EVENT_18_UUID = 'c09fde77-cc05-4139-a127-f71c2702f281';
     const EVENT_19_UUID = '67e75e81-ad27-4414-bb0b-9e0c6e12b275';
     const EVENT_20_UUID = '65610a6c-5f18-4e9d-b4ab-0e96c0a52d9e';
-    const EVENT_21_UUID = 'bf540276-969f-4e5f-8c7d-05149d1469b7';
 
     use ContainerAwareTrait;
 

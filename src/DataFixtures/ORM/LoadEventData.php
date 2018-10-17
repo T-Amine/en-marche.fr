@@ -364,21 +364,6 @@ class LoadEventData implements FixtureInterface, ContainerAwareInterface, Depend
         ]);
         $event20->setPublished(true);
 
-        $event21= $committeeEventFactory->createFromArray([
-            'uuid' => self::EVENT_21_UUID,
-            'organizer' => $author7,
-            'committee' => $committee4,
-            'name' => 'Événements à Fontainebleau 3',
-            'category' => $eventCategory3,
-            'description' => 'Allons à la rencontre des citoyens.',
-            'address' => PostAddress::createFrenchAddress('40 Rue Grande', '77300-77186', 48.404765, 2.698759),
-            'begin_at' => (new Chronos('+1 month'))->format('Y-m-d').' 09:30:00',
-            'finish_at' => (new Chronos('+1 month'))->format('Y-m-d').' 19:00:00',
-            'capacity' => 50,
-        ]);
-        $event21->incrementParticipantsCount();
-        $event21->setPublished(true);
-
         $manager->persist($event1);
         $manager->persist($event2);
         $manager->persist($event3);
@@ -399,7 +384,6 @@ class LoadEventData implements FixtureInterface, ContainerAwareInterface, Depend
         $manager->persist($event18);
         $manager->persist($event19);
         $manager->persist($event20);
-        $manager->persist($event21);
 
         $manager->persist($registrationFactory->createFromCommand(new EventRegistrationCommand($event8, $author3)));
         $manager->persist($registrationFactory->createFromCommand(new EventRegistrationCommand($event9, $author3)));
@@ -436,14 +420,9 @@ class LoadEventData implements FixtureInterface, ContainerAwareInterface, Depend
         $eventRegistration3->setFirstName('Jean');
         $eventRegistration3->setLastName('PIERRE');
         $eventRegistration3->setEmailAddress('jean.pierre@test.com');
-        $eventRegistration4 = new EventRegistrationCommand($event21);
-        $eventRegistration4->setFirstName('Jacques');
-        $eventRegistration4->setLastName('Picard');
-        $eventRegistration4->setEmailAddress('jacques.picard@en-marche.fr');
         $manager->persist($registrationFactory->createFromCommand($eventRegistration1));
         $manager->persist($registrationFactory->createFromCommand($eventRegistration2));
         $manager->persist($registrationFactory->createFromCommand($eventRegistration3));
-        $manager->persist($registrationFactory->createFromCommand($eventRegistration4));
 
         $manager->flush();
 

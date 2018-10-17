@@ -408,25 +408,22 @@ class EventControllerTest extends AbstractEventControllerTest
     {
         $this->authenticateAsAdherent($this->client, 'jacques.picard@en-marche.fr');
 
-        $event = $this->getEventRepository()->findOneByUuid(LoadEventData::EVENT_21_UUID);
-        $eventUrl = sprintf('/evenements/%s/', $event->getSlug());
+        $eventUrl = $this->getEventUrl();
 
-        $this->client->request(Request::METHOD_GET, $eventUrl);
-        $crawler = $this->client->followRedirect();
+        $crawler = $this->client->request(Request::METHOD_GET, $eventUrl);
 
         $this->assertSame('1 inscrit', trim($crawler->filter('.committee-event-attendees')->text()));
         $this->assertSame('Je ne veux plus participer', trim($crawler->filter('.unregister-event')->text()));
 
         $unregistrationButton = $this->client->getCrawler()->filter('.unregister-event');
 
-        $this->client->request(Request::METHOD_POST, sprintf('/evenements/%s/desinscription', $event->getSlug()), [
+        $this->client->request(Request::METHOD_POST, sprintf('%s/desinscription', $this->getEventUrl()), [
             'token' => $unregistrationButton->attr('data-csrf-token'),
         ], [], ['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']);
 
         $this->assertResponseStatusCode(Response::HTTP_OK, $this->client->getResponse());
 
-        $this->client->request(Request::METHOD_GET, $eventUrl);
-        $crawler = $this->client->followRedirect();
+        $crawler = $this->client->request(Request::METHOD_GET, $eventUrl);
 
         $this->assertSame('0 inscrit', trim($crawler->filter('.committee-event-attendees')->text()));
         $this->assertSame('Je veux participer', trim($crawler->filter('.register-event')->text()));

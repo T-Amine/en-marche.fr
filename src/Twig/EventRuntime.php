@@ -25,4 +25,3 @@ class EventRuntime
         return $this->eventRegistrationRepository->findGuestRegistration($event->getUuid(), $user->getEmailAddress()) ? true : false;
     }
 }
-

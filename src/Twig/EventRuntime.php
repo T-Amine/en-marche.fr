@@ -18,7 +18,7 @@ class EventRuntime
 
     public function isEventAlreadyParticipating(Event $event, ?UserInterface $user): bool
     {
-        if (!$user instanceof Adherent || !$user) {
+        if (!$user instanceof Adherent) {
             return false;
         }
 

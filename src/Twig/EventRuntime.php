@@ -16,7 +16,7 @@ class EventRuntime
         $this->eventRegistrationRepository = $eventRegistrationRepository;
     }
 
-    public function isAlreadyParticipating(Event $event, ?UserInterface $user): bool
+    public function isEventAlreadyParticipating(Event $event, ?UserInterface $user): bool
     {
         if (!$user instanceof Adherent || !$user) {
             return false;

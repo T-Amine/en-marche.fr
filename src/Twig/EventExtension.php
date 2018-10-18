@@ -10,7 +10,7 @@ class EventExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction('is_already_participating', [EventRuntime::class, 'isAlreadyParticipating']),
+            new TwigFunction('is_event_already_participating', [EventRuntime::class, 'isEventAlreadyParticipating']),
         ];
     }
 }

@@ -34,16 +34,20 @@
             <div class="text--white text--center">
                 L'événement à été annulé
             </div>
-        {% elseif not event.full%}
-            {% if is_already_participating(event, app.user) %}
-                <button class="btn btn--no-border {{ isFull?' btn--full':''}} unregister-event" data-csrf-token="{{ csrf_token('citizen_action.unregistration') }}">Je ne veux plus participer</button>
+        {% elseif not event.full %}
+            {% if is_event_already_participating(event, app.user) %}
+                <button class="btn btn--no-border {{ isFull?' btn--full':''}} unregister-event" data-csrf-token="{{ csrf_token('event.unregistration') }}">Je ne veux plus participer</button>
             {% else %}
                 <a class="btn btn--no-border {{ isFull?' btn--full':''}} register-event" href="{{ path("app_#{event.type}_attend", {slug: event.slug}) }}">Je veux participer</a>
             {% endif %}
         {% else %}
-            <button class="btn btn--no-border{{ isFull?' btn--full':''}} btn--text-blue btn--disabled register-event" disabled="disabled">
-                Je veux participer
-            </button>
+            {% if is_event_already_participating(event, app.user) %}
+                <button class="btn btn--no-border {{ isFull?' btn--full':''}} unregister-event" data-csrf-token="{{ csrf_token('event.unregistration') }}">Je ne veux plus participer</button>
+            {% else %}
+                <button class="btn btn--no-border{{ isFull?' btn--full':''}} btn--text-blue btn--disabled register-event" disabled="disabled">
+                    Je veux participer
+                </button>
+            {% endif %}
             <div class="text--white text--center">
                 L'événement est complet
             </div>

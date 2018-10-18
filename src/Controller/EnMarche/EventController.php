@@ -5,6 +5,7 @@ namespace AppBundle\Controller\EnMarche;
 use AppBundle\Entity\Event;
 use AppBundle\Event\EventInvitation;
 use AppBundle\Event\EventRegistrationCommand;
+use AppBundle\Event\EventRegistrationManager;
 use AppBundle\Exception\BadUuidRequestException;
 use AppBundle\Exception\InvalidUuidException;
 use AppBundle\Form\EventInvitationType;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Route("/evenements/{slug}")
@@ -179,13 +181,11 @@ class EventController extends Controller
      * @Route("/desinscription", name="app_event_unregistration", condition="request.isXmlHttpRequest()")
      * @Method("GET|POST")
      */
-    public function unregistrationAction(Request $request, Event $event): JsonResponse
+    public function unregistrationAction(Request $request, Event $event, EventRegistrationManager $eventRegistrationManager): JsonResponse
     {
-        if (!$this->isCsrfTokenValid('citizen_action.unregistration', $token = $request->request->get('token'))) {
-            throw $this->createAccessDeniedException('Invalid CSRF protection token to unregister from the citizen action.');
+        if (!$this->isCsrfTokenValid('event.unregistration', $token = $request->request->get('token'))) {
+            throw new BadRequestHttpException('Invalid CSRF protection token to unregister from the citizen action.');
         }
-
-        $eventRegistrationManager = $this->get('app.event.registration_manager');
 
         if (!($adherentEventRegistration = $eventRegistrationManager->searchRegistration($event, $this->getUser()->getEmailAddress(), null))) {
             return new JsonResponse(
